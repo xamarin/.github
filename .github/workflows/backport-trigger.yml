@@ -25,11 +25,11 @@ jobs:
           $backportPRNumber = 0
           $backportTargetBranch = ""
 
-          if ("$eventName".Equals ("workflow_dispatch")) {
+          if ($eventName.Equals("workflow_dispatch")) {
             # grab from input
             $backportPRNumber = "${{ env.INPUT_BACKPORT_PR_NUMBER }}"
             $backportTargetBranch = "${{ env.INPUT_BACKPORT_TARGET_REF }}"
-          } else if ("$eventName".Equals ("issue_comment")) {
+          } else if ($eventName.Equals("issue_comment")) {
             # issue_comment event happens on both PR and issue comments -- we need to filter
             $isPR = "${{ github.event.issue.pull_request }}"
             Write-Host "$isPR"

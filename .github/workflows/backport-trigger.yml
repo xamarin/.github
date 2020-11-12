@@ -30,7 +30,7 @@ jobs:
 
           $json = @{
             definition = @{ id = "${{ secrets.ADO_PIPELINEID }}" };
-            sourceBranch = "yaml-pipeline"; // This is hardcoded for now
+            sourceBranch = "yaml-pipeline"; # This is hardcoded for now
             parameters = $parameters
           } | ConvertTo-Json
 

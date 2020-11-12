@@ -3,6 +3,12 @@ name: Backport Trigger
 on:
   pull_request_review_comment:
     types: [created]
+  workflow_dispatch:
+    inputs:
+      foobar:
+        description: 'x'
+        required: true
+        default: 'foo'
 
 jobs:
   launchBackportBuild:

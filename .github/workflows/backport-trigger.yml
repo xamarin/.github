@@ -17,12 +17,13 @@ jobs:
       # NOTE: This is one step because of a known vulnerability in workflow commands: https://bugs.chromium.org/p/project-zero/issues/detail?id=2070&can=2&q=&colspec=ID%20Type%20Status%20Priority%20Milestone%20Owner%20Summary&cells=ids
       - name: Launch ADO Backport Build
         run: |
-          Write-Host "${{ issue.pull_request }}"
+          Write-Host "${{ github.event_name }}"
+          ($repoOwner, $repoName) = "${{ github.repository }}".Split("/")
 
           $launchURI = "https://dev.azure.com/${{ secrets.ADO_PROJECTCOLLECTION }}/${{ secrets.ADO_PROJECT }}/_apis/build/builds?api-version=6.0"
           $parameters = @{
-            BackportRepoName = "";
-            BackportRepoOrg = "";
+            BackportRepoName = "$repoName";
+            BackportRepoOrg = "$repoOwner";
             BackportTargetBranch = "${{ env.GITHUB_REF }}";
             BackportPRNumber = ""
           } | ConvertTo-Json

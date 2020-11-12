@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       backport_pr_number:
-        description: 'ID of the pull request to backport'
+        description: 'Number of the pull request to backport'
         required: true
       backport_target_ref:
         description: 'Shortname for the target branch for the backport to land'
@@ -27,8 +27,8 @@ jobs:
 
           if ("$eventName".Equals ("workflow_dispatch")) {
             # grab from input
-            $backportPRNumber = "${{ inputs.backport_pr_number }}"
-            $backportTargetBranch = "${{ inputs.backport_target_ref }}"
+            $backportPRNumber = "${{ env.INPUT_BACKPORT_PR_NUMBER }}"
+            $backportTargetBranch = "${{ env.INPUT_BACKPORT_TARGET_REF }}"
           } else if ("$eventName".Equals ("issue_comment")) {
             # issue_comment event happens on both PR and issue comments -- we need to filter
             $isPR = "${{ github.event.issue.pull_request }}"

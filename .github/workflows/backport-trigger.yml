@@ -14,17 +14,27 @@ jobs:
   launchBackportBuild:
     runs-on: windows-latest
     steps:
-      - name: Echo the comment
-        run: Write-Host "${{ github.event.comment.body }}"
-        shell: pwsh
-
-      - name: Write out json
+      # NOTE: This is one step because of a known vulnerability in workflow commands: https://bugs.chromium.org/p/project-zero/issues/detail?id=2070&can=2&q=&colspec=ID%20Type%20Status%20Priority%20Milestone%20Owner%20Summary&cells=ids
+      - name: Launch ADO Backport Build
         run: |
+          Write-Host "${{ issue.pull_request }}"
+
           $launchURI = "https://dev.azure.com/${{ secrets.ADO_PROJECTCOLLECTION }}/${{ secrets.ADO_PROJECT }}/_apis/build/builds?api-version=6.0"
+          $parameters = @{
+            BackportRepoName = "";
+            BackportRepoOrg = "";
+            BackportTargetBranch = "${{ env.GITHUB_REF }}";
+            BackportPRNumber = ""
+          } | ConvertTo-Json
+
           $json = @{
             definition = @{ id = "${{ secrets.ADO_PIPELINEID }}" };
-            parameters = ""
+            sourceBranch = "yaml-pipeline"; // This is hardcoded for now
+            parameters = $parameters
           } | ConvertTo-Json
-          Write-Host "Posting to $(launchURI):"
-          Write-Host $json.ToString
+
+          Write-Host "Posting to $launchURI`:"
+          Write-Host "$json"
+          $encoded = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(":${{ secrets.ADO_BUILDPAT }}"))
+          $headers = @{ Authorization = "Basic $encoded"}
         shell: pwsh

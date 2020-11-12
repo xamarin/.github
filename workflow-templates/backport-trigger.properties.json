@@ -1,5 +1,5 @@
 {
   "name": "Backport Trigger",
   "description": "Launch a backport request via PR comments",
-  "iconName": "example-icon"
+  "iconName": "backport-trigger"
 }

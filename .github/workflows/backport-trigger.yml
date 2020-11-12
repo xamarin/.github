@@ -5,10 +5,12 @@ on:
     types: [created]
   workflow_dispatch:
     inputs:
-      foobar:
-        description: 'x'
+      backport_pr_number:
+        description: 'ID of the pull request to backport'
         required: true
-        default: 'foo'
+      backport_target_ref:
+        description: 'Shortname for the target branch for the backport to land'
+        required: true
 
 jobs:
   launchBackportBuild:
@@ -17,19 +19,42 @@ jobs:
       # NOTE: This is one step because of a known vulnerability in workflow commands: https://bugs.chromium.org/p/project-zero/issues/detail?id=2070&can=2&q=&colspec=ID%20Type%20Status%20Priority%20Milestone%20Owner%20Summary&cells=ids
       - name: Launch ADO Backport Build
         run: |
-          Write-Host "${{ github.event_name }}"
+          $eventName = "${{ github.event_name }}"
+          Write-Host "Action launched by a(n) $eventName event"
+
+          $backportPRNumber = 0
+          $backportTargetBranch = ""
+
+          if ("$eventName".Equals ("workflow_dispatch")) {
+            # grab from input
+            $backportPRNumber = "${{ inputs.backport_pr_number }}"
+            $backportTargetBranch = "${{ inputs.backport_target_ref }}"
+          } else if ("$eventName".Equals ("issue_comment")) {
+            # issue_comment event happens on both PR and issue comments -- we need to filter
+            $isPR = "${{ github.event.issue.pull_request }}"
+            Write-Host "$isPR"
+            if (false) {
+
+            } else {
+              Write-Host "Not launching on issue comments"
+              return 0
+            }
+          } else {
+            throw "Unrecognized event: $eventName"
+          }
+
           ($repoOwner, $repoName) = "${{ github.repository }}".Split("/")
 
           $launchURI = "https://dev.azure.com/${{ secrets.ADO_PROJECTCOLLECTION }}/${{ secrets.ADO_PROJECT }}/_apis/build/builds?api-version=6.0"
           $parameters = @{
             BackportRepoName = "$repoName";
             BackportRepoOrg = "$repoOwner";
-            BackportTargetBranch = "${{ env.GITHUB_REF }}";
-            BackportPRNumber = ""
+            BackportTargetBranch = "$backportTargetBranch";
+            BackportPRNumber = "$backportPRNumber"
           } | ConvertTo-Json
 
           $json = @{
-            definition = @{ id = "${{ secrets.ADO_PIPELINEID }}" };
+            definition = @{ id = "${{ secrets.BACKPORT_PIPELINEID }}" };
             sourceBranch = "yaml-pipeline"; # This is hardcoded for now
             parameters = $parameters
           } | ConvertTo-Json

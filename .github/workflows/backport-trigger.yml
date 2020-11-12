@@ -34,10 +34,16 @@ jobs:
             $isPR = "${{ github.event.issue.pull_request }}"
             Write-Host "$isPR"
             if (false) {
-
+              # parse input
+              ($botName, $backport, $backportTargetBranch) = "${{ github.event.issue.comment }}".Split(" ")
+              if ($botName.Equals("@monojenkins") -and $backport.Equals("backport", [System.StringComparison]::OrdinalIgnoreCase) -and (-not [System.String]::IsNullOrEmpty($backportTargetBranch))) {
+                $backportPRNumber = "${{ github.event.issue.pull_request.number }}"
+              } else {
+                throw "Usage Error"
+              }
             } else {
               Write-Host "Not launching on issue comments"
-              return 0
+              exit 0
             }
           } else {
             throw "Unrecognized event: $eventName"

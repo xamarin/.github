@@ -32,12 +32,18 @@ jobs:
           } elseif ($eventName.Equals("issue_comment")) {
             # issue_comment event happens on both PR and issue comments -- we need to filter
             $isPR = "${{ github.event.issue.pull_request }}"
-            Write-Host "$isPR"
-            if (false) {
 
+            if (($isPR -ne $null) -and (-not [System.String]::IsNullOrEmpty($isPR))) {
+              # parse input
+              ($botName, $backport, $backportTargetBranch) = "${{ github.event.issue.comment }}".Split(" ")
+              if ($botName.Equals("@monojenkins") -and $backport.Equals("backport", [System.StringComparison]::OrdinalIgnoreCase) -and (-not [System.String]::IsNullOrEmpty($backportTargetBranch))) {
+                $backportPRNumber = "${{ github.event.issue.pull_request.number }}"
+              } else {
+                throw "Usage Error"
+              }
             } else {
-              Write-Host "Not launching on issue comments"
-              return 0
+              Write-Host "No-op: Action was launched on an issue comment, not a PR comment"
+              exit 0
             }
           } else {
             throw "Unrecognized event: $eventName"

@@ -6,9 +6,19 @@ on:
 
 jobs:
   launchBackportBuild:
-    name: Starting Backport Build
     runs-on: windows-latest
     steps:
       - name: Echo the comment
-        run: Write-Host "$(github.event.comment.body)"
+        run: Write-Host "${{ github.event.comment.body }}"
+        shell: pwsh
+
+      - name: Write out json
+        run: |
+          $launchURI = "https://dev.azure.com/${{ secrets.ADO_PROJECTCOLLECTION }}/${{ secrets.ADO_PROJECT }}/_apis/build/builds?api-version=6.0"
+          $json = @{
+            definition = @{ id = "${{ secrets.ADO_PIPELINEID }}" };
+            parameters = ""
+          } | ConvertTo-Json
+          Write-Host "Posting to $launchURI:"
+          Write-Host $json.ToString
         shell: pwsh

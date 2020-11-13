@@ -72,10 +72,10 @@ jobs:
             definition = @{ id = "${{ secrets.BACKPORT_PIPELINEID }}" };
             sourceBranch = "yaml-pipeline"; # This is hardcoded for now
             parameters = $parameters
-          }
+          } | ConvertTo-Json
 
-          Write-Host "Posting to $launchURI`:"
-          ConvertTo-Json $json | Write-Host
+          Write-Host "Posting to $launchURI :"
+          Write-Host $json
           $encoded = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(":${{ secrets.ADO_BUILDPAT }}"))
           $headers = @{ Authorization = "Basic $encoded"}
 

@@ -37,11 +37,11 @@ jobs:
               $isPR = "${{ github.event.issue.pull_request }}"
 
               if (($isPR -ne $null) -and (-not [System.String]::IsNullOrEmpty($isPR))) {
-                # parse input
                 Write-Host "Parsing ${{ github.event.comment.body }}"
                 ($botName, $backport, $backportTargetBranch) = [System.Text.RegularExpressions.Regex]::Split("${{ github.event.comment.body }}", "\s+")
                 if ($botName.Equals("@monojenkins") -and $backport.Equals("backport", [System.StringComparison]::OrdinalIgnoreCase) -and (-not [System.String]::IsNullOrEmpty($backportTargetBranch))) {
-                  $backportPRNumber = "${{ github.event.issue.pull_request.url }}"
+                  # The only information in the github.event.issue.pull_request payload that has the PR number is the url
+                  $backportPRNumber = "${{ github.event.issue.pull_request.url }}".Split("/").Last
                 } else {
                   Write-Host "Could not parse comment for backport command"
                   Write-Host "Usage: @monojenkins backport TARGET_BRANCH"

@@ -79,5 +79,5 @@ jobs:
           $encoded = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(":${{ secrets.ADO_BUILDPAT }}"))
           $headers = @{ Authorization = "Basic $encoded"}
 
-          Invoke-WebRequest -UseBasicParsing -Method POST -Headers $headers -Uri $launchURI -Body $json
+          Invoke-WebRequest -UseBasicParsing -Method POST -Headers $headers -ContentType "application/json" -Uri $launchURI -Body $json
         shell: pwsh

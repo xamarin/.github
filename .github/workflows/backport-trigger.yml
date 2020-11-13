@@ -25,31 +25,37 @@ jobs:
           $backportPRNumber = 0
           $backportTargetBranch = ""
 
-          if ($eventName.Equals("workflow_dispatch")) {
-            # grab from input
-            $backportPRNumber = "${{ github.event.inputs.backport_pr_number }}"
-            $backportTargetBranch = "${{ github.event.inputs.backport_target_ref }}"
-          } elseif ($eventName.Equals("issue_comment")) {
-            # issue_comment event happens on both PR and issue comments -- we need to filter
-            $isPR = "${{ github.event.issue.pull_request }}"
+          switch ($eventName) {
+            "workflow_dispatch" {
+              # grab from input
+              $backportPRNumber = "${{ github.event.inputs.backport_pr_number }}"
+              $backportTargetBranch = "${{ github.event.inputs.backport_target_ref }}"
+              Break
+            }
+            "issue_comment" {
+              # issue_comment event happens on both PR and issue comments -- we need to filter
+              $isPR = "${{ github.event.issue.pull_request }}"
 
-            if (($isPR -ne $null) -and (-not [System.String]::IsNullOrEmpty($isPR))) {
-              # parse input
-              Write-Host "Parsing ${{ github.event.comment.body }}"
-              ($botName, $backport, $backportTargetBranch) = [System.Text.RegularExpressions.Regex]::Split("${{ github.event.comment.body }}", "\s+")
-              if ($botName.Equals("@monojenkins") -and $backport.Equals("backport", [System.StringComparison]::OrdinalIgnoreCase) -and (-not [System.String]::IsNullOrEmpty($backportTargetBranch))) {
-                $backportPRNumber = "${{ github.event.issue.pull_request.id }}"
+              if (($isPR -ne $null) -and (-not [System.String]::IsNullOrEmpty($isPR))) {
+                # parse input
+                Write-Host "Parsing ${{ github.event.comment.body }}"
+                ($botName, $backport, $backportTargetBranch) = [System.Text.RegularExpressions.Regex]::Split("${{ github.event.comment.body }}", "\s+")
+                if ($botName.Equals("@monojenkins") -and $backport.Equals("backport", [System.StringComparison]::OrdinalIgnoreCase) -and (-not [System.String]::IsNullOrEmpty($backportTargetBranch))) {
+                  $backportPRNumber = "${{ github.event.issue.pull_request.url }}"
+                } else {
+                  Write-Host "Could not parse comment for backport command"
+                  Write-Host "Usage: @monojenkins backport TARGET_BRANCH"
+                  exit 0
+                }
               } else {
-                Write-Host "Could not parse comment for backport command"
-                Write-Host "Usage: @monojenkins backport TARGET_BRANCH"
+                Write-Host "No-op: Action was launched on an issue comment, not a PR comment"
                 exit 0
               }
-            } else {
-              Write-Host "No-op: Action was launched on an issue comment, not a PR comment"
-              exit 0
+              Break
             }
-          } else {
-            throw "Unrecognized event: $eventName"
+            default {
+              throw "Unrecognized event: $eventName"
+            }
           }
 
           ($repoOwner, $repoName) = "${{ github.repository }}".Split("/")

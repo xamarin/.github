@@ -35,7 +35,7 @@ jobs:
 
             if (($isPR -ne $null) -and (-not [System.String]::IsNullOrEmpty($isPR))) {
               # parse input
-              Write-Host "Parsing ${{ github.event.issue.comment }}"
+              Write-Host "Parsing ${{ github.event.comment }}"
               ($botName, $backport, $backportTargetBranch) = [System.Text.RegularExpressions.Regex]::Split("${{ github.event.issue.comment }}", "\s+")
               if ($botName.Equals("@monojenkins") -and $backport.Equals("backport", [System.StringComparison]::OrdinalIgnoreCase) -and (-not [System.String]::IsNullOrEmpty($backportTargetBranch))) {
                 $backportPRNumber = "${{ github.event.issue.pull_request.number }}"

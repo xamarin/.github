@@ -66,7 +66,7 @@ jobs:
             BackportRepoOrg = "$repoOwner";
             BackportTargetBranch = "$backportTargetBranch";
             BackportPRNumber = "$backportPRNumber"
-          }
+          } | ConvertTo-Json -Compress
 
           $json = @{
             definition = @{ id = "${{ secrets.BACKPORT_PIPELINEID }}" };

@@ -39,7 +39,9 @@ jobs:
               if ($botName.Equals("@monojenkins") -and $backport.Equals("backport", [System.StringComparison]::OrdinalIgnoreCase) -and (-not [System.String]::IsNullOrEmpty($backportTargetBranch))) {
                 $backportPRNumber = "${{ github.event.issue.pull_request.number }}"
               } else {
-                throw "Usage Error"
+                Write-Host "Could not parse comment for backport command"
+                Write-Host "Usage: @monojenkins backport TARGET_BRANCH"
+                exit 0
               }
             } else {
               Write-Host "No-op: Action was launched on an issue comment, not a PR comment"

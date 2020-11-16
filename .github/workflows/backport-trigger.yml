@@ -72,7 +72,7 @@ jobs:
             previewRun = false;
             templateParameters = $parameters;
             resources = @{ repositories = @{ self = @{ refName = "refs/heads/yaml-pipeline" } } };
-          } | ConvertTo-Json
+          } | ConvertTo-Json -Depth 10
 
           Write-Host "Posting to $launchURI :"
           Write-Host $json

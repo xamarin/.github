@@ -60,7 +60,7 @@ jobs:
 
           ($repoOwner, $repoName) = "${{ github.repository }}".Split("/")
 
-          $launchURI = "https://dev.azure.com/${{ secrets.ADO_PROJECTCOLLECTION }}/${{ secrets.ADO_PROJECT }}/_apis/build/builds?api-version=6.0"
+          $launchURI = "https://dev.azure.com/${{ secrets.ADO_PROJECTCOLLECTION }}/${{ secrets.ADO_PROJECT }}/_apis/pipelines/${{ secrets.BACKPORT_PIPELINEID }}/runs?api-version=6.0-preview.1"
           $parameters = @{
             BackportRepoName = "$repoName";
             BackportRepoOrg = "$repoOwner";
@@ -69,9 +69,8 @@ jobs:
           } | ConvertTo-Json -Compress
 
           $json = @{
-            definition = @{ id = "${{ secrets.BACKPORT_PIPELINEID }}" };
-            sourceBranch = "yaml-pipeline"; # This is hardcoded for now
-            parameters = $parameters
+            previewRun = false;
+            templateParameters = $parameters;
           } | ConvertTo-Json
 
           Write-Host "Posting to $launchURI :"

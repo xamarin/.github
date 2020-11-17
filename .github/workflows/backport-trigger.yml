@@ -19,6 +19,19 @@ jobs:
       # NOTE: This is one step because of a known vulnerability in workflow commands: https://bugs.chromium.org/p/project-zero/issues/detail?id=2070&can=2&q=&colspec=ID%20Type%20Status%20Priority%20Milestone%20Owner%20Summary&cells=ids
       - name: Launch ADO Backport Build
         run: |
+          function Comment-OnPR {
+            params ($PrNumber, $Message, $Repo)
+
+            $jsonBody = @{
+              body = $Message
+            } | ConvertTo-Json
+
+            $encoded = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(":${{ secrets.ADO_BUILDPAT }}"))
+            $headers = @{ Authorization = "Basic $encoded"}
+
+            Invoke-WebRequest -UseBasicParsing -Headers $headers -Method POST -Uri "https://api.github.com/repos/$Repo/issues/$PrNumber/comments" -body $jsonBody
+          }
+
           $eventName = "${{ github.event_name }}"
           Write-Host "Action launched by a(n) $eventName event"
 
@@ -59,25 +72,35 @@ jobs:
           }
 
           ($repoOwner, $repoName) = "${{ github.repository }}".Split("/")
+          try {
 
-          $launchURI = "https://dev.azure.com/${{ secrets.ADO_PROJECTCOLLECTION }}/${{ secrets.ADO_PROJECT }}/_apis/pipelines/${{ secrets.BACKPORT_PIPELINEID }}/runs?api-version=6.0-preview.1"
-          $parameters = @{
-            BackportRepoName = "$repoName";
-            BackportRepoOrg = "$repoOwner";
-            BackportTargetBranch = "$backportTargetBranch";
-            BackportPRNumber = "$backportPRNumber"
+            $launchURI = "https://dev.azure.com/${{ secrets.ADO_PROJECTCOLLECTION }}/${{ secrets.ADO_PROJECT }}/_apis/pipelines/${{ secrets.BACKPORT_PIPELINEID }}/runs?api-version=6.0-preview.1"
+            $parameters = @{
+              BackportRepoName = "$repoName";
+              BackportRepoOrg = "$repoOwner";
+              BackportTargetBranch = "$backportTargetBranch";
+              BackportPRNumber = "$backportPRNumber"
+            }
+
+            $json = @{
+              previewRun = false;
+              templateParameters = $parameters;
+              resources = @{ repositories = @{ self = @{ refName = "refs/heads/yaml-pipeline" } } };
+            } | ConvertTo-Json -Depth 10
+
+            Write-Host "Posting to $launchURI :"
+            Write-Host $json
+            $encoded = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(":${{ secrets.ADO_BUILDPAT }}"))
+            $headers = @{ Authorization = "Basic $encoded"}
+
+            $response = Invoke-WebRequest -UseBasicParsing -Method POST -Headers $headers -ContentType "application/json" -Uri $launchURI -Body $json
+            $responseJson = $response.Content | ConvertTo-Json
+            $message = "Backport Created! The magic is happening [here](https://dev.azure.com/${{ secrets.ADO_PROJECTCOLLECTION }}/${{ secrets.ADO_PROJECT }}/_builds?buildId=$($responseJson.id))."
+            Comment-OnPR -PrNumber $BackportPRNumber -Message $message -Repo "${{ github.repository }}"
+            exit 0
+          } catch {
+            $message = "I couldn't create a backport for you :(`n`nHere's the exception message:`n$($_.Exception.Message)"
+            Comment-OnPR -PrNumber $BackportPRNumber -Message $message -Repo "${{ github.repository }}"
+            Write-Error -Message $_ -ErrorAction Stop
           }
-
-          $json = @{
-            previewRun = false;
-            templateParameters = $parameters;
-            resources = @{ repositories = @{ self = @{ refName = "refs/heads/yaml-pipeline" } } };
-          } | ConvertTo-Json -Depth 10
-
-          Write-Host "Posting to $launchURI :"
-          Write-Host $json
-          $encoded = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(":${{ secrets.ADO_BUILDPAT }}"))
-          $headers = @{ Authorization = "Basic $encoded"}
-
-          Invoke-WebRequest -UseBasicParsing -Method POST -Headers $headers -ContentType "application/json" -Uri $launchURI -Body $json
         shell: pwsh

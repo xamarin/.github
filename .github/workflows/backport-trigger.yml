@@ -104,7 +104,7 @@ jobs:
             $responseJson = $response.Content | ConvertFrom-Json
 
             Write-Host "Response:`n$responseJson"
-            $message = "Backport Created! The magic is happening [here](https://dev.azure.com/${{ secrets.ADO_PROJECTCOLLECTION }}/${{ secrets.ADO_PROJECT }}/_builds?buildId=$($responseJson.id))."
+            $message = "Backport Job Created! The magic is happening [here](https://dev.azure.com/${{ secrets.ADO_PROJECTCOLLECTION }}/${{ secrets.ADO_PROJECT }}/_builds?buildId=$($responseJson.id))."
             Comment-OnPR -PrNumber $BackportPRNumber -Message $message -Repo "${{ github.repository }}"
             exit 0
           } catch {

@@ -30,8 +30,7 @@ jobs:
               body = $Message
             } | ConvertTo-Json
 
-            $encoded = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(":${{ secrets.ADO_BUILDPAT }}"))
-            $headers = @{ Authorization = "Basic $encoded"}
+            $headers = @{ Authorization = "token ${{ secrets.SERVICEACCOUNT_PAT }}"}
             $uri = "https://api.github.com/repos/$Repo/issues/$PrNumber/comments"
 
 

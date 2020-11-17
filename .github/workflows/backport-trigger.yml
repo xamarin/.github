@@ -20,7 +20,11 @@ jobs:
       - name: Launch ADO Backport Build
         run: |
           function Comment-OnPR {
-            params ($PrNumber, $Message, $Repo)
+            param (
+              $PrNumber,
+              $Message,
+              $Repo
+            )
 
             $jsonBody = @{
               body = $Message

@@ -108,9 +108,9 @@ jobs:
               BackportRepoOrg = "$repoOwner";
               BackportTargetBranch = "$backportTargetBranch";
               BackportPRNumber = "$backportPRNumber";
-              BackportTitle = "";
-              BackportDescription = "";
-              BackportHeadSHA = "";
+              BackportTitle = $backportTitle;
+              BackportDescription = $backportDescription;
+              BackportHeadSHA = $backportHeadSha;
             }
 
             $json = @{

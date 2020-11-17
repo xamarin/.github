@@ -32,8 +32,12 @@ jobs:
 
             $encoded = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(":${{ secrets.ADO_BUILDPAT }}"))
             $headers = @{ Authorization = "Basic $encoded"}
+            $uri = "https://api.github.com/repos/$Repo/issues/$PrNumber/comments"
 
-            Invoke-WebRequest -UseBasicParsing -Headers $headers -Method POST -Uri "https://api.github.com/repos/$Repo/issues/$PrNumber/comments" -body $jsonBody
+
+            Write-Host "Posting to $uri"
+            Write-Host "$jsonBody"
+            Invoke-WebRequest -UseBasicParsing -Headers $headers -Method POST -Uri $uri -Body $jsonBody
           }
 
           $eventName = "${{ github.event_name }}"

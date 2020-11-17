@@ -81,7 +81,7 @@ jobs:
                   $response = Invoke-WebRequest -UseBasicParsing -Headers $headers -Uri "${{ github.event.issue.pull_request.url }}" | ConvertFrom-Json
                   $backportPRNumber = $response.number
                   $backportTitle = $response.title
-                  $backportDesc = $response.body
+                  $backportDescription = $response.body
                   $backportHeadSha = $response.head.sha
                 } else {
                   Write-Host "Could not parse comment for backport command"

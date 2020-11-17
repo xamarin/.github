@@ -102,6 +102,8 @@ jobs:
 
             $response = Invoke-WebRequest -UseBasicParsing -Method POST -Headers $headers -ContentType "application/json" -Uri $launchURI -Body $json
             $responseJson = $response.Content | ConvertTo-Json
+
+            Write-Host "Response:`n$responseJson"
             $message = "Backport Created! The magic is happening [here](https://dev.azure.com/${{ secrets.ADO_PROJECTCOLLECTION }}/${{ secrets.ADO_PROJECT }}/_builds?buildId=$($responseJson.id))."
             Comment-OnPR -PrNumber $BackportPRNumber -Message $message -Repo "${{ github.repository }}"
             exit 0

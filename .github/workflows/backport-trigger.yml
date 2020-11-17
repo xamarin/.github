@@ -104,7 +104,8 @@ jobs:
             $responseJson = $response.Content | ConvertFrom-Json
 
             Write-Host "Response:`n$responseJson"
-            $message = "Backport Job Created! The magic is happening [here](https://dev.azure.com/${{ secrets.ADO_PROJECTCOLLECTION }}/${{ secrets.ADO_PROJECT }}/_builds?buildId=$($responseJson.id))."
+            # We need to create the link to the DevOps build because it is not provided to us in the response
+            $message = "Backport Job Created! The magic is happening [here](https://dev.azure.com/${{ secrets.ADO_PROJECTCOLLECTION }}/${{ secrets.ADO_PROJECT }}/_build/results?buildId=$($responseJson.id))."
             Comment-OnPR -PrNumber $BackportPRNumber -Message $message -Repo "${{ github.repository }}"
             exit 0
           } catch {

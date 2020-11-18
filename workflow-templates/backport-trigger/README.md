@@ -6,7 +6,7 @@
 ## Process:
 1) You will need to add the Backport Trigger GitHub action to your repository. This can be done by following the steps [here](https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/sharing-workflows-with-your-organization#using-a-workflow-template).
 
-2) Invite the [`vs-mobiletools-engineering-service2`](https://github.com/vs-mobiletools-engineering-service2) account to the repository with `Write` access. This is a special service account that cannot belong to any GitHub organization.
+2) Invite the [`vs-mobiletools-engineering-service2`](https://github.com/vs-mobiletools-engineering-service2) account to the repository with `Write` access. This is a special service account that cannot belong to any GitHub organization. This request will need to be approved manually -- please reach out to VSEng for help if it does not get accepted in a timely fashion.
 
 And that's it :)
 

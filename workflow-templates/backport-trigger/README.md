@@ -16,7 +16,7 @@ Similar to v1, the backport bot can be invoked by writing the following command 
 @vs-mobiletools-engineering-service2 backport $TARGET_BRANCH
 ```
 
-Tab complete is your friend.
+Tab complete is your friend for the service account name.
 
 This will then trigger the GitHub Action. If successful, the service account will say it launched an ADO job and link you to it.
 

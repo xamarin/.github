@@ -1,0 +1,17 @@
+name: Backport Trigger
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  launchBackportBuild:
+    runs-on: ubuntu-latest
+    if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '@vs-mobiletools-engineering-service2 backport')
+
+    steps:
+      - uses: xamarin/launch-backport-action@v1.0-alpha
+        with:
+          pull_request_url: ${{ github.event.issue.pull_request.url }}
+          comment_body: ${{ github.event.comment.body }}
+          github_repository: ${{ github.repository }}

@@ -10,8 +10,13 @@ jobs:
     if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '@vs-mobiletools-engineering-service2 backport')
 
     steps:
-      - uses: xamarin/backport-bot-action@v1.0-alpha
+      - uses: xamarin/backport-bot-action@v1.0-alpha2
         with:
           pull_request_url: ${{ github.event.issue.pull_request.url }}
           comment_body: ${{ github.event.comment.body }}
           github_repository: ${{ github.repository }}
+          ado_organization: ${{ secrets.ADO_PROJECTCOLLECTION }}
+          ado_project: ${{ secrets.ADO_PROJECT }}
+          backport_pipeline_id: ${{ secrets.BACKPORT_PIPELINEID }}
+          ado_build_pat: ${{ secrets.ADO_BUILDPAT }}
+          github_account_pat: ${{ secrets.SERVICEACCOUNT_PAT }}

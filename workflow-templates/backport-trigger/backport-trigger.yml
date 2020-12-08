@@ -14,7 +14,7 @@ jobs:
         with:
           pull_request_url: ${{ github.event.issue.pull_request.url }}
           comment_body: ${{ github.event.comment.body }}
-          comment_author: ${{ github.event.sender }}
+          comment_author: ${{ github.actor }}
           github_repository: ${{ github.repository }}
           ado_organization: ${{ secrets.ADO_PROJECTCOLLECTION }}
           ado_project: ${{ secrets.ADO_PROJECT }}

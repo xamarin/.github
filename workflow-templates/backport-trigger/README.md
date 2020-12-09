@@ -18,12 +18,18 @@ Similar to v1, the backport bot can be invoked by writing the following command 
 
 Tab complete is your friend for the service account name.
 
-This will then trigger the GitHub Action. If successful, the service account will say it launched an ADO job and link you to it.
+This will then trigger the GitHub Action. If successful, the service account will say it launched an ADO job.
 
-If unsuccessful, you will see a comment that exposes the exception which caused a failure.
+The ADO job will link back and say whether or not it succeeded with a link to the build.
+
+If the action is unsuccessful at launching the job, you will see a comment mentioning that there were issues. There will be additional information in the Actions tab.
+
+Please reach out to VSEng in Teams if you experience any issues.
 
 **If there is no comment, it is likely that the command entered is not right.**
 Check the summary for the action by clicking on the Actions tab on the home page of the repository.
 
 
 The GitHub Action itself does not perform the backport, but launches an ADO job that performs the git magic. The yml pipeline for that can be found [here](https://github.com/xamarin/mono-github-trigger/blob/yaml-pipeline/backport-bot.yml).
+
+The corresponding Azure DevOps pipeline can be found [here](https://devdiv.visualstudio.com/DevDiv/_build?definitionId=13834).

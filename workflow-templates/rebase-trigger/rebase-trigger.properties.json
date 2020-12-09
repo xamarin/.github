@@ -1,0 +1,5 @@
+{
+  "name": "Rebase Trigger",
+  "description": "Launch a rebase request via PR comments",
+  "iconName": "rebase-trigger"
+}

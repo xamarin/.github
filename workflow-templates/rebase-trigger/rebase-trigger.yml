@@ -17,6 +17,6 @@ jobs:
           github_repository: ${{ github.repository }}
           ado_organization: ${{ secrets.ADO_PROJECTCOLLECTION }}
           ado_project: ${{ secrets.ADO_PROJECT }}
-          rebase_pipeline_id:
+          rebase_pipeline_id: 13926
           ado_build_pat: ${{ secrets.ADO_BUILDPAT }}
           github_account_pat: ${{ secrets.SERVICEACCOUNT_PAT }}

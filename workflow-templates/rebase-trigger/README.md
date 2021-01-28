@@ -15,7 +15,7 @@ NOTE: In order to invoke the action, you must either have Write or Admin access 
 
 Similar to v1, the rebase bot can be invoked by writing the following command as a comment on the PR you wish to rebase:
 ```
-@vs-mobiletools-engineering-service2 rebase
+@gitbot rebase
 ```
 
 Tab complete is your friend for the service account name.

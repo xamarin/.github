@@ -4,7 +4,7 @@
 - You must be an admin on the repository that you're onboarding.
 
 ## Process:
-1) You will need to add the Backport Trigger GitHub action to your repository. This can be done by following the steps [here](https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/sharing-workflows-with-your-organization#using-a-workflow-template).
+1) You will need to add the Backport Trigger GitHub action to your repository. This can be done by following the steps [here](https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/sharing-workflows-with-your-organization#using-a-workflow-template). The template is set up to work out of the box, but you can configure it to create backport branches on forks instead of the main repository by changing [this line](https://github.com/xamarin/.github/blob/main/.github/workflows/backport-trigger.yml#L24) to true.
 
 2) Invite the [`vs-mobiletools-engineering-service2`](https://github.com/vs-mobiletools-engineering-service2) account to the repository with `Write` access. This is a special service account that cannot belong to any GitHub organization. This request will need to be approved manually -- please reach out to VSEng for help if it does not get accepted in a timely fashion.
 

@@ -8,6 +8,9 @@ jobs:
   steps:
   - checkout: self
   - bash: |
+      finger $(whoami)
+    displayName: Check Login Shell
+  - bash: |
       [[ -o interactive ]] && echo "Interactive" || echo "Non-Interactive"
     displayName: "Is Inline Bash Script Interactive?"
   - bash: "$(Build.SourcesDirectory)/foo.sh"

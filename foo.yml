@@ -1,0 +1,26 @@
+trigger: none
+pr: none
+jobs:
+- job: bash_test
+  displayName: "Is yaml interactive?"
+  pool:
+    vmImage: macOS-latest
+  steps:
+  - bash: |
+      [[ -o interactive ]] && echo "Interactive" || echo "Non-Interactive"
+    displayName: "Is Inline Bash Script Interactive?"
+  - bash: 
+    filePath: foo.sh
+    displayName: "Is Bash Script From File Interactive?"
+  - pwsh: |
+      # https://stackoverflow.com/questions/9738535/powershell-test-for-noninteractive-mode
+      $NonInteractive = [Environment]::GetCommandLineArgs() | Where-Object{ $_ -like '-NonI*' }
+      if ([Environment]::UserInteractive -and -not $NonInteractive) {
+        echo "Interactive"
+      } else {
+        echo "NonInteractive"
+      }
+    displayName: "Is Inline pwsh Script Interactive?"
+  - pwsh: |
+    filePath: foo.ps1
+    displayName: "Is pwsh Script From File Interactive?"

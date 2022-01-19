@@ -6,11 +6,11 @@ jobs:
   pool:
     vmImage: macOS-latest
   steps:
+  - checkout: self
   - bash: |
       [[ -o interactive ]] && echo "Interactive" || echo "Non-Interactive"
     displayName: "Is Inline Bash Script Interactive?"
-  - bash: 
-    filePath: foo.sh
+  - bash: foo.sh
     displayName: "Is Bash Script From File Interactive?"
   - pwsh: |
       # https://stackoverflow.com/questions/9738535/powershell-test-for-noninteractive-mode
@@ -21,6 +21,5 @@ jobs:
         echo "NonInteractive"
       }
     displayName: "Is Inline pwsh Script Interactive?"
-  - pwsh: |
-    filePath: foo.ps1
+  - pwsh: foo.ps1
     displayName: "Is pwsh Script From File Interactive?"

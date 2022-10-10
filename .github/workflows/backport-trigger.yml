@@ -6,7 +6,7 @@ on:
 
 jobs:
   launchBackportBuild:
-    if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '@vs-mobiletools-engineering-service2 backport')
+    if: github.event.issue.pull_request != '' && startswith(github.event.comment.body, '@vs-mobiletools-engineering-service2 backport')
     
     uses: xamarin/backport-bot-action/.github/workflows/backport-action.yml@v1.1
     with:
@@ -14,11 +14,11 @@ jobs:
       comment_body: ${{ github.event.comment.body }}
       comment_author: ${{ github.actor }}
       github_repository: ${{ github.repository }}
+      use_fork: false
+    secrets:
       ado_organization: ${{ secrets.ADO_PROJECTCOLLECTION }}
       ado_project: ${{ secrets.ADO_PROJECT }}
       backport_pipeline_id: ${{ secrets.BACKPORT_PIPELINEID }}
-      use_fork: false
-    secrets:
       ado_build_pat: ${{ secrets.ADO_BUILDPAT }}
       github_account_pat: ${{ secrets.SERVICEACCOUNT_PAT }}
 

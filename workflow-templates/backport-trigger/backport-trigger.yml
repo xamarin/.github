@@ -5,10 +5,11 @@ on:
     types: [created]
 
 jobs:
-  launchBackportBuild:
+  setupBackport:
     runs-on: ubuntu-latest
     if: github.event.issue.pull_request != '' && startswith(github.event.comment.body, '@vs-mobiletools-engineering-service2 backport')
-
+    outputs:
+      target_branch: ${{ steps.parse_comment.outputs.target_branch }}
     steps:
       - name: Parse Comment
         id: parse_comment
@@ -20,16 +21,18 @@ jobs:
         env:
           COMMENT: "${{ github.event.comment.body }}"
 
-      - uses: xamarin/backport-bot-action@v1.1
-        with:
-          pull_request_url: ${{ github.event.issue.pull_request.url }}
-          target_branch: ${{ steps.parse_comment.outputs.target_branch }}
-          comment_author: ${{ github.actor }}
-          github_repository: ${{ github.repository }}
-          use_fork: 'false'
-        secrets:
-          ado_organization: ${{ secrets.ADO_PROJECTCOLLECTION }}
-          ado_project: ${{ secrets.ADO_PROJECT }}
-          backport_pipeline_id: ${{ secrets.BACKPORT_PIPELINEID }}
-          ado_build_pat: ${{ secrets.ADO_BUILDPAT }}
-          github_account_pat: ${{ secrets.SERVICEACCOUNT_PAT }}
+  launchBackportBuild:
+    needs: setupBackport
+    uses: xamarin/backport-bot-action@v1.1
+    with:
+      pull_request_url: ${{ github.event.issue.pull_request.url }}
+      target_branch: ${{ needs.setupBackport.outputs.target_branch }}
+      comment_author: ${{ github.actor }}
+      github_repository: ${{ github.repository }}
+      use_fork: 'false'
+    secrets:
+      ado_organization: ${{ secrets.ADO_PROJECTCOLLECTION }}
+      ado_project: ${{ secrets.ADO_PROJECT }}
+      backport_pipeline_id: ${{ secrets.BACKPORT_PIPELINEID }}
+      ado_build_pat: ${{ secrets.ADO_BUILDPAT }}
+      github_account_pat: ${{ secrets.SERVICEACCOUNT_PAT }}

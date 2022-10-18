@@ -29,7 +29,7 @@ jobs:
       target_branch: ${{ needs.setupBackport.outputs.target_branch }}
       comment_author: ${{ github.actor }}
       github_repository: ${{ github.repository }}
-      use_fork: 'false'
+      use_fork: false
     secrets:
       ado_organization: ${{ secrets.ADO_PROJECTCOLLECTION }}
       ado_project: ${{ secrets.ADO_PROJECT }}

@@ -23,7 +23,7 @@ jobs:
 
   launchBackportBuild:
     needs: setupBackport
-    uses: xamarin/backport-bot-action/.github/workflows/backport-bot-action.yml@v1.1
+    uses: xamarin/backport-bot-action/.github/workflows/backport-action.yml@v1.1
     with:
       pull_request_url: ${{ github.event.issue.pull_request.url }}
       target_branch: ${{ needs.setupBackport.outputs.target_branch }}

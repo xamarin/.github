@@ -18,7 +18,7 @@ jobs:
     if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '@vs-mobiletools-engineering-service2 rebase')
 
     steps:
-      - uses: xamarin/rebase-bot-action@v1.0
+      - uses: xamarin/rebase-bot-action@c8becb16dbac035519906d8e8320f9dee19ffb36 # v1.0
         with:
           pull_request_url: ${{ github.event.issue.pull_request.url }}
           comment_author: ${{ github.actor }}
